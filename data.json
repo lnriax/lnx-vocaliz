@@ -1,0 +1,92 @@
+[
+  {
+    "word": "Ambiguous",
+    "type": "adj",
+    "phonetic": "/æmˈbɪɡ.ju.əs/",
+    "meaning": "Mơ hồ, nhập nhằng",
+    "example": "His reply to my question was somewhat ambiguous.",
+    "synonyms": ["vague", "unclear", "equivocal"],
+    "collocations": ["ambiguous word", "ambiguous sentence", "deliberately ambiguous"]
+  },
+  {
+    "word": "Consistency",
+    "type": "n",
+    "phonetic": "/kənˈsɪs.tən.si/",
+    "meaning": "Tính nhất quán",
+    "example": "Consistency is the key to success.",
+    "synonyms": ["stability", "uniformity", "coherence"],
+    "collocations": ["lack of consistency", "improve consistency"]
+  },
+  {
+    "word": "Elaborate",
+    "type": "v",
+    "phonetic": "/ɪˈlæb.ə.reɪt/",
+    "meaning": "Giải thích chi tiết",
+    "example": "Could you elaborate on your proposal?",
+    "synonyms": ["explain", "expand", "clarify"],
+    "collocations": ["elaborate on", "elaborate plan"]
+  },
+  {
+    "word": "Inevitable",
+    "type": "adj",
+    "phonetic": "/ɪˈnev.ɪ.tə.bəl/",
+    "meaning": "Không thể tránh khỏi",
+    "example": "Change is inevitable in the modern world.",
+    "synonyms": ["unavoidable", "inescapable", "certain"],
+    "collocations": ["inevitable result", "inevitable consequence"]
+  },
+  {
+    "word": "Pragmatic",
+    "type": "adj",
+    "phonetic": "/præɡˈmæt.ɪk/",
+    "meaning": "Thực dụng, thực tế",
+    "example": "She took a pragmatic approach to solving the problem.",
+    "synonyms": ["practical", "realistic", "sensible"],
+    "collocations": ["pragmatic approach", "pragmatic solution"]
+  },
+  {
+    "word": "Resilient",
+    "type": "adj",
+    "phonetic": "/rɪˈzɪl.i.ənt/",
+    "meaning": "Kiên cường, dẻo dai",
+    "example": "Children are remarkably resilient.",
+    "synonyms": ["tough", "strong", "adaptable"],
+    "collocations": ["resilient economy", "emotionally resilient"]
+  },
+  {
+    "word": "Scrutinize",
+    "type": "v",
+    "phonetic": "/ˈskruː.tɪ.naɪz/",
+    "meaning": "Xem xét kỹ lưỡng",
+    "example": "The detective scrutinized every piece of evidence.",
+    "synonyms": ["examine", "inspect", "analyze"],
+    "collocations": ["scrutinize closely", "scrutinize the data"]
+  },
+  {
+    "word": "Substantial",
+    "type": "adj",
+    "phonetic": "/səbˈstæn.ʃəl/",
+    "meaning": "Đáng kể, quan trọng",
+    "example": "There has been a substantial increase in sales.",
+    "synonyms": ["significant", "considerable", "major"],
+    "collocations": ["substantial amount", "substantial evidence"]
+  },
+  {
+    "word": "Versatile",
+    "type": "adj",
+    "phonetic": "/ˈvɜː.sə.taɪl/",
+    "meaning": "Đa năng, linh hoạt",
+    "example": "She is a versatile athlete who excels in many sports.",
+    "synonyms": ["adaptable", "flexible", "multitalented"],
+    "collocations": ["versatile player", "versatile tool"]
+  },
+  {
+    "word": "Diminish",
+    "type": "v",
+    "phonetic": "/dɪˈmɪn.ɪʃ/",
+    "meaning": "Giảm bớt, thu nhỏ",
+    "example": "Nothing could diminish her enthusiasm for the project.",
+    "synonyms": ["reduce", "decrease", "lessen"],
+    "collocations": ["diminish in value", "diminish the impact"]
+  }
+]
