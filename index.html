@@ -1,237 +1,295 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vocabulary Challenge</title>
-    <meta name="description" content="Ứng dụng học từ vựng tiếng Anh với SM-2 spaced repetition, 5 kiểu kiểm tra, và giao diện Lofi Sakura Japan.">
+    <meta name="description"
+        content="Ứng dụng học từ vựng tiếng Anh với SM-2 spaced repetition, 5 kiểu kiểm tra, và giao diện Lofi Sakura Japan.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-<!-- Particle canvas: sakura + fireflies -->
-<canvas id="particle-canvas" aria-hidden="true"></canvas>
-<!-- Ambient blobs -->
-<div class="bg-blobs" aria-hidden="true">
-    <div class="blob b1"></div><div class="blob b2"></div>
-    <div class="blob b3"></div><div class="blob b4"></div>
-</div>
+    <!-- Particle canvas: sakura + fireflies -->
+    <canvas id="particle-canvas" aria-hidden="true"></canvas>
+    <!-- Ambient blobs -->
+    <div class="bg-blobs" aria-hidden="true">
+        <div class="blob b1"></div>
+        <div class="blob b2"></div>
+        <div class="blob b3"></div>
+        <div class="blob b4"></div>
+    </div>
 
-<div class="app-shell" id="app-shell">
+    <div class="app-shell" id="app-shell">
 
-    <!-- ═══ Topbar ═══ -->
-    <header class="topbar" id="topbar">
-        <div class="topbar-brand">
-            <div class="brand-sq"><span class="bsq r"></span><span class="bsq g"></span><span class="bsq b"></span><span class="bsq y"></span></div>
-            <span class="brand-name">Vocabulary Challenge</span>
-        </div>
-        <div class="topbar-actions">
-            <button id="btn-music" class="action-btn" title="Lofi Music (M)">🔇</button>
-            <button id="btn-data" class="action-btn" title="Quản lý dữ liệu">📂</button>
-        </div>
-    </header>
+        <!-- ═══ Topbar ═══ -->
+        <header class="topbar" id="topbar">
+            <div class="topbar-brand">
+                <div class="brand-sq"><span class="bsq r"></span><span class="bsq g"></span><span
+                        class="bsq b"></span><span class="bsq y"></span></div>
+                <span class="brand-name">Vocabulary Challenge</span>
+            </div>
+            <div class="topbar-actions">
+                <button id="btn-music" class="action-btn" title="Lofi Music (M)">🔇</button>
+                <button id="btn-data" class="action-btn" title="Quản lý dữ liệu">📂</button>
+            </div>
+        </header>
 
-    <!-- ═══ Upload (no data) ═══ -->
-    <section id="f-upload" class="frame hidden">
-        <div class="glass-card upload-card">
-            <div class="upload-logo">
-                <div class="brand-sq large-sq"><span class="bsq r"></span><span class="bsq g"></span><span class="bsq b"></span><span class="bsq y"></span></div>
-                <h1 class="upload-title">Vocabulary Challenge</h1>
-                <p class="upload-sub">Nạp dữ liệu từ vựng để bắt đầu học</p>
-            </div>
-            <div id="dz-main" class="drop-zone">
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <p class="dz-title">Kéo thả tệp vào đây</p>
-                <p class="dz-sub">hoặc nhấn để chọn <strong>.json</strong> / <strong>.csv</strong></p>
-                <input type="file" id="fi-main" accept=".json,.csv" hidden>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ Dashboard ═══ -->
-    <section id="f-dash" class="frame hidden">
-        <div class="quote-card">
-            <p id="quote-text" class="quote-text"></p>
-            <span id="quote-author" class="quote-author"></span>
-        </div>
-        <div class="stats-row">
-            <div class="stat-tile"><span class="stat-n" id="st-total">0</span><span class="stat-l">Tổng từ</span></div>
-            <div class="stat-tile"><span class="stat-n accent" id="st-due">0</span><span class="stat-l">Cần ôn</span></div>
-            <div class="stat-tile"><span class="stat-n green" id="st-mastered">0</span><span class="stat-l">Đã thuộc</span></div>
-            <div class="stat-tile"><span class="stat-n gold" id="st-streak">0</span><span class="stat-l">🔥 Streak</span></div>
-        </div>
-        <div class="section-block">
-            <h3 class="section-label">📅 Kỷ luật học tập</h3>
-            <div class="heatmap-scroll"><div id="heatmap" class="heatmap"></div></div>
-            <div class="hm-legend">
-                <span class="hm-leg-l">Ít</span>
-                <span class="hm-leg-c" style="--op:.08"></span><span class="hm-leg-c" style="--op:.3"></span>
-                <span class="hm-leg-c" style="--op:.6"></span><span class="hm-leg-c" style="--op:.85"></span>
-                <span class="hm-leg-c" style="--op:1"></span>
-                <span class="hm-leg-l">Nhiều</span>
-            </div>
-        </div>
-        <div class="section-block deck-block">
-            <h3 class="section-label">🌸 Focus Deck</h3>
-            <div id="deck-list" class="deck-list"><p id="deck-empty" class="deck-empty">Chưa có dữ liệu.</p></div>
-            <div class="dash-actions">
-                <button id="btn-review" class="primary-btn hidden">🚀 Ôn tập Flashcard <kbd>R</kbd></button>
-                <button id="btn-quiz-mode" class="secondary-btn hidden">⚡ Kiểm tra (5 kiểu thi) <kbd>T</kbd></button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ Data Manager ═══ -->
-    <section id="f-data" class="frame hidden">
-        <div class="glass-card">
-            <div class="card-hdr">
-                <h2 class="card-title">📂 Quản lý dữ liệu</h2>
-                <button id="btn-data-close" class="close-btn">✕</button>
-            </div>
-            <div id="dz-mgr" class="drop-zone dz-sm">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <p class="dz-title">Kéo thả hoặc nhấn để chọn tệp</p>
-                <input type="file" id="fi-mgr" accept=".json,.csv" hidden>
-            </div>
-            <div class="import-opts">
-                <label class="radio-row"><input type="radio" name="im" value="append" checked><span>Thêm vào dữ liệu cũ</span></label>
-                <label class="radio-row"><input type="radio" name="im" value="replace"><span>Thay thế hoàn toàn</span></label>
-            </div>
-            <div class="stored-hdr">
-                <span class="stored-label">Đã lưu: <strong id="stored-cnt">0</strong> từ</span>
-                <div class="stored-actions">
-                    <button id="btn-export" class="export-btn" title="Xuất JSON backup">📤 Xuất</button>
-                    <button id="btn-clear" class="danger-btn hidden">🗑 Xóa</button>
+        <!-- ═══ Upload (no data) ═══ -->
+        <section id="f-upload" class="frame hidden">
+            <div class="glass-card upload-card">
+                <div class="upload-logo">
+                    <div class="brand-sq large-sq"><span class="bsq r"></span><span class="bsq g"></span><span
+                            class="bsq b"></span><span class="bsq y"></span></div>
+                    <h1 class="upload-title">Vocabulary Challenge</h1>
+                    <p class="upload-sub">Nạp dữ liệu từ vựng để bắt đầu học</p>
+                </div>
+                <div id="dz-main" class="drop-zone">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <p class="dz-title">Kéo thả tệp vào đây</p>
+                    <p class="dz-sub">hoặc nhấn để chọn <strong>.json</strong> / <strong>.csv</strong></p>
+                    <input type="file" id="fi-main" accept=".json,.csv" hidden>
                 </div>
             </div>
-            <input id="data-search" type="text" class="data-search" placeholder="🔍 Tìm từ vựng..." autocomplete="off">
-            <div id="stored-list" class="stored-list"></div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ═══ Quiz Type Selection ═══ -->
-    <section id="f-qtype" class="frame hidden">
-        <div class="glass-card">
-            <h2 class="card-title center">Chọn kiểu thi</h2>
-            <p class="card-sub">Luyện tập theo cách bạn muốn</p>
-            <div class="qtype-grid">
-                <button class="qtype-btn" data-quiz="recognition"><span class="qt-ico">📖</span><span class="qt-name">Trắc nghiệm xuôi</span><span class="qt-desc">Từ → Nghĩa</span></button>
-                <button class="qtype-btn" data-quiz="reverse"><span class="qt-ico">🔄</span><span class="qt-name">Trắc nghiệm ngược</span><span class="qt-desc">Nghĩa → Từ</span></button>
-                <button class="qtype-btn" data-quiz="spelling"><span class="qt-ico">✍️</span><span class="qt-name">Điền từ</span><span class="qt-desc">Nghĩa + phiên âm → Gõ</span></button>
-                <button class="qtype-btn" data-quiz="context"><span class="qt-ico">💬</span><span class="qt-name">Hoàn thành câu</span><span class="qt-desc">Điền từ vào ví dụ</span></button>
-                <button class="qtype-btn" data-quiz="synonym"><span class="qt-ico">🔗</span><span class="qt-name">Liên tưởng</span><span class="qt-desc">Synonyms → Từ</span></button>
-                <button class="qtype-btn qtype-mixed" data-quiz="mixed"><span class="qt-ico">🌊</span><span class="qt-name">Mixed Mode</span><span class="qt-desc">60% trắc nghiệm · 30% điền · 10% câu</span></button>
+        <!-- ═══ Dashboard ═══ -->
+        <section id="f-dash" class="frame hidden">
+            <div class="quote-card">
+                <p id="quote-text" class="quote-text"></p>
+                <span id="quote-author" class="quote-author"></span>
             </div>
-            <button class="back-btn" id="back-to-dash-from-qtype">← Quay lại</button>
-        </div>
-    </section>
-
-    <!-- ═══ Focus Flashcard ═══ -->
-    <section id="f-focus" class="frame hidden">
-        <div class="focus-prog-wrap">
-            <div class="prog-track"><div id="focus-bar" class="prog-fill"></div></div>
-            <span id="focus-cnt" class="prog-lbl">0/0</span>
-            <div class="live-counter">
-                <span id="lc-known" class="lc lc-g">✅ 0</span>
-                <span id="lc-unknown" class="lc lc-r">❌ 0</span>
+            <div class="stats-row">
+                <div class="stat-tile"><span class="stat-n" id="st-total">0</span><span class="stat-l">Tổng từ</span>
+                </div>
+                <div class="stat-tile"><span class="stat-n accent" id="st-due">0</span><span class="stat-l">Cần
+                        ôn</span></div>
+                <div class="stat-tile"><span class="stat-n green" id="st-mastered">0</span><span class="stat-l">Đã
+                        thuộc</span></div>
+                <div class="stat-tile"><span class="stat-n gold" id="st-streak">0</span><span class="stat-l">🔥
+                        Streak</span></div>
             </div>
-        </div>
-        <div class="focus-badge-row"><span id="focus-badge" class="mode-badge">📖 Flashcard</span></div>
+            <div class="section-block">
+                <h3 class="section-label">📅 Kỷ luật học tập</h3>
+                <div class="heatmap-scroll">
+                    <div id="heatmap" class="heatmap"></div>
+                </div>
+                <div class="hm-legend">
+                    <span class="hm-leg-l">Ít</span>
+                    <span class="hm-leg-c" style="--op:.08"></span><span class="hm-leg-c" style="--op:.3"></span>
+                    <span class="hm-leg-c" style="--op:.6"></span><span class="hm-leg-c" style="--op:.85"></span>
+                    <span class="hm-leg-c" style="--op:1"></span>
+                    <span class="hm-leg-l">Nhiều</span>
+                </div>
+            </div>
+            <div class="section-block deck-block">
+                <h3 class="section-label">🌸 Focus Deck</h3>
+                <div id="deck-list" class="deck-list">
+                    <p id="deck-empty" class="deck-empty">Chưa có dữ liệu.</p>
+                </div>
+                <div class="dash-actions">
+                    <button id="btn-review" class="primary-btn hidden">🚀 Ôn tập Flashcard <kbd>R</kbd></button>
+                    <button id="btn-quiz-mode" class="secondary-btn hidden">⚡ Kiểm tra (5 kiểu thi)
+                        <kbd>T</kbd></button>
+                </div>
+            </div>
+        </section>
 
-        <div class="fc-scene-wrap">
-            <div class="fc-scene" id="fc-scene">
-                <!-- Swipe direction overlays -->
-                <div class="swipe-overlay swipe-left" id="swipe-left-ol">✗ Chưa thuộc</div>
-                <div class="swipe-overlay swipe-right" id="swipe-right-ol">✓ Thuộc rồi</div>
-                <div class="fc" id="fc">
-                    <div class="fc-face fc-front">
-                        <span id="fc-type" class="type-pill"></span>
-                        <h2 id="fc-word" class="fc-word"></h2>
-                        <p id="fc-phone" class="fc-phone"></p>
-                        <span class="fc-hint">SPACE · NHẤN ĐỂ LẬT ↺</span>
+        <!-- ═══ Data Manager ═══ -->
+        <section id="f-data" class="frame hidden">
+            <div class="glass-card">
+                <div class="card-hdr">
+                    <h2 class="card-title">📂 Quản lý dữ liệu</h2>
+                    <button id="btn-data-close" class="close-btn">✕</button>
+                </div>
+                <div id="dz-mgr" class="drop-zone dz-sm">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <p class="dz-title">Kéo thả hoặc nhấn để chọn tệp</p>
+                    <input type="file" id="fi-mgr" accept=".json,.csv" hidden>
+                </div>
+                <div class="import-opts">
+                    <label class="radio-row"><input type="radio" name="im" value="append" checked><span>Thêm vào dữ liệu
+                            cũ</span></label>
+                    <label class="radio-row"><input type="radio" name="im" value="replace"><span>Thay thế hoàn
+                            toàn</span></label>
+                </div>
+                <div class="stored-hdr">
+                    <span class="stored-label">Đã lưu: <strong id="stored-cnt">0</strong> từ</span>
+                    <div class="stored-actions">
+                        <button id="btn-export" class="export-btn" title="Xuất JSON backup">📤 Xuất</button>
+                        <button id="btn-clear" class="danger-btn hidden">🗑 Xóa</button>
                     </div>
-                    <div class="fc-face fc-back">
-                        <div class="fc-back-rows">
-                            <div class="fc-row"><span class="fc-lbl">Nghĩa</span><p id="bk-meaning" class="fc-val val-green"></p></div>
-                            <div class="fc-row"><span class="fc-lbl">Ví dụ</span><p id="bk-example" class="fc-val val-dim"></p></div>
-                            <div class="fc-row" id="bk-syn-row"><span class="fc-lbl">Đồng nghĩa</span><p id="bk-synonyms" class="fc-val val-tags"></p></div>
-                            <div class="fc-row" id="bk-col-row"><span class="fc-lbl">Collocations</span><p id="bk-collocations" class="fc-val val-tags"></p></div>
+                </div>
+                <input id="data-search" type="text" class="data-search" placeholder="🔍 Tìm từ vựng..."
+                    autocomplete="off">
+                <div id="stored-list" class="stored-list"></div>
+            </div>
+        </section>
+
+        <!-- ═══ Quiz Type Selection ═══ -->
+        <section id="f-qtype" class="frame hidden">
+            <div class="glass-card">
+                <h2 class="card-title center">Chọn kiểu thi</h2>
+                <p class="card-sub">Luyện tập theo cách bạn muốn</p>
+                <div class="qtype-grid">
+                    <button class="qtype-btn" data-quiz="recognition"><span class="qt-ico">📖</span><span
+                            class="qt-name">Trắc nghiệm xuôi</span><span class="qt-desc">Từ → Nghĩa</span></button>
+                    <button class="qtype-btn" data-quiz="reverse"><span class="qt-ico">🔄</span><span
+                            class="qt-name">Trắc nghiệm ngược</span><span class="qt-desc">Nghĩa → Từ</span></button>
+                    <button class="qtype-btn" data-quiz="spelling"><span class="qt-ico">✍️</span><span
+                            class="qt-name">Điền từ</span><span class="qt-desc">Nghĩa + phiên âm → Gõ</span></button>
+                    <button class="qtype-btn" data-quiz="context"><span class="qt-ico">💬</span><span
+                            class="qt-name">Hoàn thành câu</span><span class="qt-desc">Điền từ vào ví dụ</span></button>
+                    <button class="qtype-btn" data-quiz="synonym"><span class="qt-ico">🔗</span><span
+                            class="qt-name">Liên tưởng</span><span class="qt-desc">Synonyms → Từ</span></button>
+                    <button class="qtype-btn qtype-mixed" data-quiz="mixed"><span class="qt-ico">🌊</span><span
+                            class="qt-name">Mixed Mode</span><span class="qt-desc">60% trắc nghiệm · 30% điền · 10%
+                            câu</span></button>
+                </div>
+                <button class="back-btn" id="back-to-dash-from-qtype">← Quay lại</button>
+            </div>
+        </section>
+
+        <!-- ═══ Focus Flashcard ═══ -->
+        <section id="f-focus" class="frame hidden">
+            <div class="focus-prog-wrap">
+                <div class="prog-track">
+                    <div id="focus-bar" class="prog-fill"></div>
+                </div>
+                <span id="focus-cnt" class="prog-lbl">0/0</span>
+                <div class="live-counter">
+                    <span id="lc-known" class="lc lc-g">✅ 0</span>
+                    <span id="lc-unknown" class="lc lc-r">❌ 0</span>
+                </div>
+            </div>
+            <div class="focus-badge-row"><span id="focus-badge" class="mode-badge">📖 Flashcard</span></div>
+
+            <div class="fc-scene-wrap">
+                <div class="fc-scene" id="fc-scene">
+                    <!-- Swipe direction overlays -->
+                    <div class="swipe-overlay swipe-left" id="swipe-left-ol">✗ Chưa thuộc</div>
+                    <div class="swipe-overlay swipe-right" id="swipe-right-ol">✓ Thuộc rồi</div>
+                    <div class="fc" id="fc">
+                        <div class="fc-face fc-front">
+                            <span id="fc-type" class="type-pill"></span>
+                            <h2 id="fc-word" class="fc-word"></h2>
+                            <p id="fc-phone" class="fc-phone"></p>
+                            <span class="fc-hint">SPACE · NHẤN ĐỂ LẬT ↺</span>
                         </div>
-                        <span class="fc-hint">NHẤN ĐỂ LẬT ↺</span>
+                        <div class="fc-face fc-back">
+                            <div class="fc-back-rows">
+                                <div class="fc-row"><span class="fc-lbl">Nghĩa</span>
+                                    <p id="bk-meaning" class="fc-val val-green"></p>
+                                </div>
+                                <div class="fc-row"><span class="fc-lbl">Ví dụ</span>
+                                    <p id="bk-example" class="fc-val val-dim"></p>
+                                </div>
+                                <div class="fc-row" id="bk-syn-row"><span class="fc-lbl">Đồng nghĩa</span>
+                                    <p id="bk-synonyms" class="fc-val val-tags"></p>
+                                </div>
+                                <div class="fc-row" id="bk-col-row"><span class="fc-lbl">Collocations</span>
+                                    <p id="bk-collocations" class="fc-val val-tags"></p>
+                                </div>
+                            </div>
+                            <span class="fc-hint">NHẤN ĐỂ LẬT ↺</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div id="rating-bar" class="rating-bar hidden">
-            <button class="rate-btn rb-dont" id="rb-dont"><span class="rb-icon">←</span><span>Chưa thuộc</span><kbd>1</kbd></button>
-            <button class="rate-btn rb-know" id="rb-know"><span>Thuộc rồi</span><span class="rb-icon">→</span><kbd>4</kbd></button>
-        </div>
-        <div class="swipe-hint">← vuốt trái chưa thuộc · vuốt phải thuộc →</div>
-        <button id="btn-exit-focus" class="exit-link">Esc · Thoát phiên</button>
-    </section>
+            <div id="rating-bar" class="rating-bar hidden">
+                <button class="rate-btn rb-dont" id="rb-dont"><span class="rb-icon">←</span><span>Chưa
+                        thuộc</span><kbd>1</kbd></button>
+                <button class="rate-btn rb-know" id="rb-know"><span>Thuộc rồi</span><span
+                        class="rb-icon">→</span><kbd>4</kbd></button>
+            </div>
+            <div class="swipe-hint">← vuốt trái chưa thuộc · vuốt phải thuộc →</div>
+            <button id="btn-exit-focus" class="exit-link">Esc · Thoát phiên</button>
+        </section>
 
-    <!-- ═══ Test / Quiz ═══ -->
-    <section id="f-test" class="frame hidden">
-        <div class="test-prog-wrap">
-            <div class="prog-track"><div id="test-bar" class="prog-fill"></div></div>
-            <span id="test-lbl" class="prog-lbl">1 / 1</span>
-        </div>
-        <div class="glass-card test-card">
-            <div id="wave-row" class="wave-row hidden">
-                <span class="wave-dot wd1"></span><span class="wave-dot wd2"></span><span class="wave-dot wd3"></span>
-                <span id="wave-text" class="wave-text"></span>
+        <!-- ═══ Test / Quiz ═══ -->
+        <section id="f-test" class="frame hidden">
+            <div class="test-prog-wrap">
+                <div class="prog-track">
+                    <div id="test-bar" class="prog-fill"></div>
+                </div>
+                <span id="test-lbl" class="prog-lbl">1 / 1</span>
             </div>
-            <div id="qt-badge" class="mode-badge center-badge"></div>
-            <div id="q-display" class="q-display"></div>
-            <p id="q-prompt" class="q-prompt"></p>
-            <div id="q-context" class="q-context hidden"></div>
-            <div id="q-syns" class="q-syns hidden"></div>
-            <div id="q-opts" class="q-opts"></div>
-            <div id="q-inp-wrap" class="q-inp-wrap hidden">
-                <input id="q-inp" type="text" class="q-inp" placeholder="Gõ từ tiếng Anh..." autocomplete="off" spellcheck="false">
-                <button id="q-sub" class="submit-btn">Kiểm tra ✓</button>
+            <div class="glass-card test-card">
+                <div id="wave-row" class="wave-row hidden">
+                    <span class="wave-dot wd1"></span><span class="wave-dot wd2"></span><span
+                        class="wave-dot wd3"></span>
+                    <span id="wave-text" class="wave-text"></span>
+                </div>
+                <div id="qt-badge" class="mode-badge center-badge"></div>
+                <div id="q-display" class="q-display"></div>
+                <p id="q-prompt" class="q-prompt"></p>
+                <div id="q-context" class="q-context hidden"></div>
+                <div id="q-syns" class="q-syns hidden"></div>
+                <div id="q-opts" class="q-opts"></div>
+                <div id="q-inp-wrap" class="q-inp-wrap hidden">
+                    <input id="q-inp" type="text" class="q-inp" placeholder="Gõ từ tiếng Anh..." autocomplete="off"
+                        spellcheck="false">
+                    <button id="q-sub" class="submit-btn">Kiểm tra ✓</button>
+                </div>
+                <div id="q-fb" class="q-fb hidden">
+                    <p id="q-fb-msg" class="q-fb-msg"></p>
+                    <button id="q-next" class="pill-btn">Câu tiếp → <kbd>Enter</kbd></button>
+                </div>
+                <button class="back-btn" id="back-to-qtype">← Chọn kiểu thi khác</button>
             </div>
-            <div id="q-fb" class="q-fb hidden">
-                <p id="q-fb-msg" class="q-fb-msg"></p>
-                <button id="q-next" class="pill-btn">Câu tiếp → <kbd>Enter</kbd></button>
-            </div>
-            <button class="back-btn" id="back-to-qtype">← Chọn kiểu thi khác</button>
-        </div>
-    </section>
+        </section>
 
-    <!-- ═══ Results ═══ -->
-    <section id="f-result" class="frame hidden">
-        <div class="glass-card result-card">
-            <span id="res-emoji" class="res-emoji">🎉</span>
-            <h2 class="card-title center">Kết quả</h2>
-            <div class="ring-wrap">
-                <svg class="ring-svg" viewBox="0 0 120 120">
-                    <circle class="ring-bg" cx="60" cy="60" r="52"/>
-                    <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52"/>
-                </svg>
-                <div class="ring-inner"><span id="ring-val" class="ring-val">0</span><span class="ring-pct">%</span></div>
+        <!-- ═══ Results ═══ -->
+        <section id="f-result" class="frame hidden">
+            <div class="glass-card result-card">
+                <span id="res-emoji" class="res-emoji">🎉</span>
+                <h2 class="card-title center">Kết quả</h2>
+                <div class="ring-wrap">
+                    <svg class="ring-svg" viewBox="0 0 120 120">
+                        <circle class="ring-bg" cx="60" cy="60" r="52" />
+                        <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52" />
+                    </svg>
+                    <div class="ring-inner"><span id="ring-val" class="ring-val">0</span><span class="ring-pct">%</span>
+                    </div>
+                </div>
+                <p id="res-detail" class="res-detail"></p>
+                <div id="res-wrong" class="res-wrong hidden">
+                    <h3 class="wrong-title">📝 Cần ôn lại</h3>
+                    <div id="wrong-list" class="wrong-list"></div>
+                </div>
+                <div class="res-actions">
+                    <button id="btn-retry" class="primary-btn">🔄 Thử lại</button>
+                    <button id="btn-retry-wrong" class="secondary-btn" disabled>🔁 Ôn từ chưa thuộc</button>
+                    <button id="btn-new-type" class="secondary-btn">📋 Kiểu thi khác</button>
+                    <button id="btn-to-dash" class="ghost-btn">← Dashboard</button>
+                </div>
             </div>
-            <p id="res-detail" class="res-detail"></p>
-            <div id="res-wrong" class="res-wrong hidden">
-                <h3 class="wrong-title">📝 Cần ôn lại</h3>
-                <div id="wrong-list" class="wrong-list"></div>
-            </div>
-            <div class="res-actions">
-                <button id="btn-retry" class="primary-btn">🔄 Thử lại</button>
-                <button id="btn-retry-wrong" class="secondary-btn" disabled>🔁 Ôn từ chưa thuộc</button>
-                <button id="btn-new-type" class="secondary-btn">📋 Kiểu thi khác</button>
-                <button id="btn-to-dash" class="ghost-btn">← Dashboard</button>
-            </div>
-        </div>
-    </section>
+        </section>
 
-</div>
+    </div>
 
-<audio id="lofi-audio" loop preload="auto"><source src="chill.m4a" type="audio/mp4"></audio>
-<script type="module" src="js/main.js"></script>
+    <audio id="lofi-audio" loop preload="auto">
+        <source src="chill_final.mp3" type="audio/mpeg">
+    </audio>
+    <script type="module" src="js/main.js"></script>
 </body>
+
 </html>
